@@ -1,0 +1,33 @@
+# Python and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+
+# Training outputs and model weights (keep parameter YAML files)
+*.pt
+*.pth
+*.onnx
+*.onnx.data
+*.ckpt
+events.out.tfevents.*
+logs/
+results/
+human_follow/results/
+wandb/
+*.mp4
+*.avi
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
