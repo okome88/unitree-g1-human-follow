@@ -1,0 +1,34 @@
+{
+  "experiment": "g1_terrain_walk",
+  "run": "2026-11-07_08-33-29",
+  "added_on": "2026-11-10",
+  "selection": "Highest numbered available checkpoint; not performance-selected",
+  "runtime": "MJLab 1.6.0",
+  "performance_validated": false,
+  "files": [
+    {
+      "file": "model_2999.pt",
+      "source": "transfer/2026-11-07_08-33-29/model_2999.pt",
+      "bytes": 7618677,
+      "sha256": "35d283528774df4a712197e6177f7064d89a3e4279f0fffa62e7f6d0314b8978"
+    },
+    {
+      "file": "policy.onnx",
+      "source": "transfer/2026-11-07_08-33-29/2026-11-07_08-33-29.onnx",
+      "bytes": 1265309,
+      "sha256": "ff335394e3667a143c23709829a9fec39728189f6d32ff09cd9da3e82042aaf4"
+    },
+    {
+      "file": "params/env.yaml",
+      "source": "transfer/2026-11-07_08-33-29/params/env.yaml",
+      "bytes": 45678,
+      "sha256": "039782171034274f3e59e2c75c43ffb31fdb93ed9a9f7604ba3ba4dc9f54a7fb"
+    },
+    {
+      "file": "params/agent.yaml",
+      "source": "transfer/2026-11-07_08-33-29/params/agent.yaml",
+      "bytes": 1288,
+      "sha256": "4a6cda1fe77db01a3b17c53614210dca33e9dafc5547fdc3b210da2f7f328d89"
+    }
+  ]
+}
