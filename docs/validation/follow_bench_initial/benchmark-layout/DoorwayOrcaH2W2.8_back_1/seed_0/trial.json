@@ -1,0 +1,40 @@
+{
+  "profile": "g1_limited_diff_2d",
+  "upstream_commit": "202d1645015f44b965a474211d5ef2bc67a00fe3",
+  "scenario": "DoorwayOrcaH2W2.8_back_1.yaml",
+  "source_sha256": "ae802593c1cd38d1995c0be39472fd022c51af9b139c588395f4cbfd1b6454ae",
+  "seed": 0,
+  "steps_requested": 500,
+  "steps_completed": 500,
+  "completed": true,
+  "distance": 1.5,
+  "target_speed_limit": 0.4,
+  "search_steps": 125,
+  "planner_reasons": {
+    "following": 500
+  },
+  "command_abs_max": [
+    0.8,
+    0.0,
+    0.7
+  ],
+  "planning_time_mean_s": 0.010696883189998516,
+  "metrics": {
+    "max_steps": 500,
+    "max_search_steps": 125,
+    "obstacle_avoidance_success": true,
+    "target_visibility_ratio": 1.0,
+    "search_success": true,
+    "search_path_length": 0.0,
+    "avg_robot_target_dist_no_radius": 1.3646220947471805,
+    "path_length": 15.7676295468286,
+    "avg_velocity": 0.3153525909365716,
+    "avg_acceleration": 0.41395139949921206,
+    "avg_jerk": 5.99899923557029,
+    "time_in_target_personal_zone": 48.300000000000416,
+    "time_in_human_private_zone": 0,
+    "time_in_target_search": 0,
+    "total_time": 50.0
+  },
+  "physics": "upstream 2D differential proxy; no ONNX or biped physics"
+}

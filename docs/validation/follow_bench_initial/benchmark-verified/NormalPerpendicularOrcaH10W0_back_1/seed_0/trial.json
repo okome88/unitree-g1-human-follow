@@ -1,0 +1,40 @@
+{
+  "profile": "g1_limited_diff_2d",
+  "upstream_commit": "202d1645015f44b965a474211d5ef2bc67a00fe3",
+  "scenario": "NormalPerpendicularOrcaH10W0_back_1.yaml",
+  "source_sha256": "d0bb65bd8d8f83b9f420e41da18acb2f95b65e2767a4d62804ef4edae4d098d3",
+  "seed": 0,
+  "steps_requested": 1500,
+  "steps_completed": 1500,
+  "completed": true,
+  "distance": 1.5,
+  "target_speed_limit": 0.4,
+  "search_steps": 125,
+  "planner_reasons": {
+    "following": 1500
+  },
+  "command_abs_max": [
+    0.7035030214587787,
+    0.0,
+    0.360514710475928
+  ],
+  "planning_time_mean_s": 0.001560199935327546,
+  "metrics": {
+    "max_steps": 1500,
+    "max_search_steps": 125,
+    "obstacle_avoidance_success": true,
+    "target_visibility_ratio": 1.0,
+    "search_success": true,
+    "search_path_length": 0.0,
+    "avg_robot_target_dist_no_radius": 1.4685369982759335,
+    "path_length": 20.251683224151666,
+    "avg_velocity": 0.13501122149434458,
+    "avg_acceleration": 0.13890095307372977,
+    "avg_jerk": 2.1875092166374364,
+    "time_in_target_personal_zone": 149.99999999999577,
+    "time_in_human_private_zone": 3.700000000000002,
+    "time_in_target_search": 0,
+    "total_time": 150.0
+  },
+  "physics": "upstream 2D differential proxy; no ONNX or biped physics"
+}
