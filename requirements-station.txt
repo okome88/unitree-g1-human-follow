@@ -1,0 +1,4 @@
+-r requirements-sim.txt
+jupedsim==1.4.2
+shapely==2.2.0
+imageio==2.38.1

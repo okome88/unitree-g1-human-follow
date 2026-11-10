@@ -12,7 +12,7 @@ from .policy import OfficialPolicy
 from .conditions import conditions, pedestrians_at
 
 
-def scene(runtime, routes=()):
+def scene(runtime, routes=(), decorate=None):
     path = runtime / "src/assets/robots/unitree_g1/xmls/scene_g1.xml"
     normalized = path.read_bytes().replace(b"\r\n", b"\n")
     if hashlib.sha256(normalized).hexdigest() != "f96a137240a2ed248e115fb6e5253959a54cc23216188ac538456d2ac179b6fd":
@@ -29,6 +29,8 @@ def scene(runtime, routes=()):
                       size=str(radius), rgba=color, contype="0", conaffinity="0")
         ET.SubElement(body, "geom", type="sphere", pos="0 0 1.65", size="0.15",
                       rgba=color, contype="0", conaffinity="0")
+    if decorate is not None:
+        decorate(root, world)
     model = mujoco.MjModel.from_xml_string(ET.tostring(root, encoding="unicode"))
     model.opt.timestep = .002
     if model.nu != 29 or model.nq != 36:
