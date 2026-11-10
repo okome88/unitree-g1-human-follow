@@ -42,6 +42,40 @@ git -C official-runtime checkout 1425b15f73bd4095f0df53709d7c389c3eb9e790
 
 ## 条件と評価
 
+### コードを編集しない条件設定
+
+```bash
+# 追従距離2m、緩い左旋回、横断する通行人3人
+python -m human_follow.sim --scenario turn --distance 2.0 --turn-rate 0.08 --pedestrians 3 --pedestrian-path crossing --pedestrian-speed 0.25 --seconds 30 --viewer
+# 通行人なしの右旋回
+python -m human_follow.sim --scenario turn --turn-rate -0.1 --pedestrians 0 --viewer
+# 任意の初期位置と直線経路をJSONで指定
+python -m human_follow.sim --scenario straight --pedestrian-routes configs/pedestrians.example.json --viewer
+```
+
+|設定|引数|範囲・意味|
+|---|---|---|
+|目標追従距離|`--distance 1.5`|1.2～3.0 m。人物初期位置も距離+0.5 mに設定|
+|人物の旋回角速度|`--turn-rate 0.1`|−0.3～0.3 rad/s。正=左、負=右、0=直進。`turn` 時のみ有効|
+|通行人数|`--pedestrians 3`|0～20。省略時 `crossing` は1人、他は0人|
+|通行人の経路|`--pedestrian-path crossing`|`crossing` 横断／`parallel` 並行／`oncoming` 対向／`stationary` 静止|
+|通行人の速度|`--pedestrian-speed 0.25`|0～1.5 m/s。静止経路では無効|
+|各通行人の個別経路|`--pedestrian-routes ファイル.json`|人数・経路プリセットを置換。`--pedestrians` と併用不可|
+
+JSONは `[[x, y, vx, vy, radius], ...]`。単位はmとm/s、座標は世界座標、半径は0.1～1 mです。
+各人は開始2秒後から指定速度で直進します。折れ線や周回の任意経路、設定GUIは未実装です。
+プリセットは2m間隔で配置し、横断はy=-2から、並行・静止はy=1.5～2、対向はy=1.5を通ります。
+設定値は結果JSONにも保存します。指定可能範囲全体での歩行成功を保証するものではありません。
+
+**追従方法は現在1種類**：候補位置選択＋等速予測＋サンプリングMPC（`adaptive_sampling_mpc`）。
+`straight` など5種類は試験シナリオで、追従アルゴリズムの種類ではありません。
+固定後方追従、横並び追従、PPO、論文どおりのMPPIを切り替える機能はまだありません。
+
+設定追加後は18件のテストと既存5条件の物理検証が通過。
+距離2 m・旋回0.08 rad/s・横断3人・人物0.4 m/s・seed 42の30秒試験も転倒なしで完了しました。
+平均対人距離2.026 m、最終1.851 m、通行人との最小近似クリアランス0.291 m。
+結果は [configurable-turn.json](docs/validation/configurable-turn.json) に保存しています。
+
 - `--scenario straight|turn|stop|loss|crossing`：直進、緩い旋回、停止、3秒の対象喪失、通行人横断。
 - `--speed 0.4`：仮想人物の速度。指定範囲は0～0.8 m/s。4 km/hは対象外です。
 - `--seed 42`：探索の乱数を固定。

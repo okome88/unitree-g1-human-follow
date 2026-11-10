@@ -9,9 +9,10 @@ import numpy as np
 import mujoco
 from .planner import Follower, Person
 from .policy import OfficialPolicy
+from .conditions import conditions, pedestrians_at
 
 
-def scene(runtime):
+def scene(runtime, routes=()):
     path = runtime / "src/assets/robots/unitree_g1/xmls/scene_g1.xml"
     normalized = path.read_bytes().replace(b"\r\n", b"\n")
     if hashlib.sha256(normalized).hexdigest() != "f96a137240a2ed248e115fb6e5253959a54cc23216188ac538456d2ac179b6fd":
@@ -20,10 +21,12 @@ def scene(runtime):
     compiler = root.find("compiler")
     compiler.set("meshdir", str((path.parent / compiler.get("meshdir", ".")).resolve()))
     world = root.find("worldbody")
-    for name, color in [("follow_target", "0.1 0.8 0.3 1"), ("pedestrian", "0.9 0.3 0.2 1")]:
+    people = [("follow_target", "0.1 0.8 0.3 1", .25)]
+    people += [(f"pedestrian_{i}", "0.9 0.3 0.2 1", route[4]) for i, route in enumerate(routes)]
+    for name, color, radius in people:
         body = ET.SubElement(world, "body", name=name, mocap="true", pos="2 0 0")
         ET.SubElement(body, "geom", type="capsule", fromto="0 0 0.3 0 0 1.4",
-                      size="0.25", rgba=color, contype="0", conaffinity="0")
+                      size=str(radius), rgba=color, contype="0", conaffinity="0")
         ET.SubElement(body, "geom", type="sphere", pos="0 0 1.65", size="0.15",
                       rgba=color, contype="0", conaffinity="0")
     model = mujoco.MjModel.from_xml_string(ET.tostring(root, encoding="unicode"))
@@ -40,17 +43,17 @@ def scene(runtime):
     return model, model.jnt_qposadr[joints], model.jnt_dofadr[joints]
 
 
-def target_at(t, scenario, speed):
+def target_at(t, scenario, speed, turn_rate=.1, start_x=2.):
     t = max(0., t - 2.)  # two seconds for the standing policy to settle
     if scenario == "stop":
         moving_time = min(t, 8.)
-        return Person(np.array([2. + speed * moving_time, 0.]), np.array([speed if t < 8 else 0., 0.]))
-    if scenario == "turn":
-        omega = .10
-        return Person(np.array([2. + speed / omega * np.sin(omega * t),
+        return Person(np.array([start_x + speed * moving_time, 0.]), np.array([speed if t < 8 else 0., 0.]))
+    if scenario == "turn" and abs(turn_rate) > 1e-8:
+        omega = turn_rate
+        return Person(np.array([start_x + speed / omega * np.sin(omega * t),
                                 speed / omega * (1 - np.cos(omega * t))]),
                       speed * np.array([np.cos(omega * t), np.sin(omega * t)]), omega * t)
-    return Person(np.array([2. + speed * t, 0.]), np.array([speed, 0.]),
+    return Person(np.array([start_x + speed * t, 0.]), np.array([speed, 0.]),
                   visible=not (scenario == "loss" and 8 <= t < 11))
 
 
@@ -59,9 +62,10 @@ def run(args):
         raise ValueError("seconds must be finite and positive")
     if not np.isfinite(args.speed) or not 0 <= args.speed <= .8:
         raise ValueError("speed must be in [0, 0.8] m/s")
+    distance, turn_rate, routes = conditions(args)
     policy = OfficialPolicy()
-    planner = Follower(args.seed)
-    model, qids, vids = scene(args.runtime.expanduser())
+    planner = Follower(args.seed, distance=distance)
+    model, qids, vids = scene(args.runtime.expanduser(), routes)
     data = mujoco.MjData(model)
     data.qpos[qids] = policy.default
     mujoco.mj_forward(model, data)
@@ -77,11 +81,11 @@ def run(args):
     frames = int(np.ceil(args.seconds / policy.dt))
     try:
         for step in range(frames):
-            target = target_at(data.time, args.scenario, args.speed)
-            obstacle = [4., -2. + .25 * max(0., data.time - 2.), 0., .25, .3]
-            obstacles = [obstacle] if args.scenario == "crossing" else []
+            target = target_at(data.time, args.scenario, args.speed, turn_rate, distance + .5)
+            obstacles = pedestrians_at(data.time, routes)
             data.mocap_pos[model.body("follow_target").mocapid[0]] = [*target.position, 0.]
-            data.mocap_pos[model.body("pedestrian").mocapid[0]] = [*obstacle[:2], 0.] if obstacles else [0., 0., -10.]
+            for i, obstacle in enumerate(obstacles):
+                data.mocap_pos[model.body(f"pedestrian_{i}").mocapid[0]] = [*obstacle[:2], 0.]
             rotation = data.xmat[model.body("pelvis").id].reshape(3, 3).copy()
             yaw = np.arctan2(rotation[1, 0], rotation[0, 0])
             if step % 5 == 0:
@@ -103,7 +107,7 @@ def run(args):
             commands.append(command.tolist())
             reasons.append(planner.reason)
             if obstacles:
-                clearances.append(float(np.linalg.norm(data.qpos[:2] - obstacle[:2]) - obstacle[4] - .35))
+                clearances.append(min(float(np.linalg.norm(data.qpos[:2] - o[:2]) - o[4] - .35) for o in obstacles))
             if viewer is not None:
                 if not viewer.is_running():
                     break
@@ -115,6 +119,8 @@ def run(args):
         if viewer is not None:
             viewer.close()
     report = dict(scenario=args.scenario, seed=args.seed, target_speed=args.speed,
+                  following_method="adaptive_sampling_mpc", desired_distance_m=distance,
+                  target_turn_rate_rad_s=turn_rate, pedestrian_routes=routes,
                   requested_seconds=args.seconds, simulated_seconds=float(data.time),
                   fallen=fallen, samples=len(distances),
                   displacement_m=float(np.linalg.norm(data.qpos[:2] - initial_xy)),
@@ -144,6 +150,12 @@ def main():
     parser.add_argument("--seconds", type=float, default=30)
     parser.add_argument("--speed", type=float, default=.4)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--distance", type=float, default=1.5, help="Following distance, 1.2–3 m")
+    parser.add_argument("--turn-rate", type=float, default=.1, help="Target yaw rate for turn scenario, ±0.3 rad/s; positive=left")
+    parser.add_argument("--pedestrians", type=int, default=None, help="0–20; default 1 for crossing, otherwise 0")
+    parser.add_argument("--pedestrian-path", choices=["crossing", "parallel", "oncoming", "stationary"], default="crossing")
+    parser.add_argument("--pedestrian-speed", type=float, default=.25, help="0–1.5 m/s")
+    parser.add_argument("--pedestrian-routes", type=Path, help="JSON list of [x,y,vx,vy,radius]; overrides preset routes")
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--output", type=Path)
     raise SystemExit(run(parser.parse_args()))
