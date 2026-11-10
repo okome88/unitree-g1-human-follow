@@ -1,5 +1,7 @@
 # Unitree公式 G1歩行モデル
 
+起動方法は [HOW_TO_USE.md](../HOW_TO_USE.md) を参照してください。
+
 `unitree_official/g1_velocity/` に、Unitree公式リポジトリ [unitreerobotics/unitree_rl_mjlab](https://github.com/unitreerobotics/unitree_rl_mjlab) から取得した学習済み速度追従モデルを収録しています。自作モデルではありません。
 
 配布元の固定コミット：`1425b15f73bd4095f0df53709d7c389c3eb9e790`。取得日：2026-11-10。

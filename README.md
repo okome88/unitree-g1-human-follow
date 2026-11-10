@@ -2,6 +2,7 @@
 
 Unitree G1の歩行学習・評価コードと、人間追従シミュレーションの設計を管理します。
 
+- **[公式モデルの使い方（HOW_TO_USE）](HOW_TO_USE.md)**：Ubuntuでの準備、シミュレーター起動、ゲームパッド操作、停止方法。
 - [人間追従の実装計画](HUMAN_FOLLOW_PLAN.md)：目標速度4 km/h、旋回なし／あり、通行人の追加設定、学習・評価条件。
 - `g1_locomotion.py`：MJLab 1.6.0による既存の地形歩行学習と評価。
 - `g1_warp_compat.py`：WarpのGPUソルバー互換用起動スクリプト。
