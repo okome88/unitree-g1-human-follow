@@ -19,8 +19,7 @@ venv/
 *.onnx.data
 *.ckpt
 # Curated model artifacts kept in this repository
-!models/g1_terrain_walk/2026-11-07_08-33-29/model_2999.pt
-!models/g1_terrain_walk/2026-11-07_08-33-29/policy.onnx
+!models/unitree_official/g1_velocity/policy.onnx
 events.out.tfevents.*
 logs/
 results/
