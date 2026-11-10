@@ -21,7 +21,7 @@
 - 前進指令範囲：−0.5～1.0 m/s、横移動：±0.5 m/s、旋回：±1.0 rad/s。
 - 4 km/hは約1.111 m/sなので公開設定の前進上限を超えます。目標速度での歩行は未検証です。
 - 公式モデルに合わせたロボットモデル・観測順序・行動尺度・PD設定が必要です。既存の `g1_locomotion.py` へファイルだけ差し替えて使用することはできません。
-- モデルの取得・配布元との一致確認まで完了しています。ONNX推論、停止・旋回、シミュレーション、人間追従の動作確認は未実施です。
+- ONNX推論と、WSL2のMuJoCo上で低速の直進・旋回・人物停止・対象喪失・横断追従を検証しました。[条件と実測結果](../AUTO_FOLLOW.md)を参照してください。公式C++経路や実機の動作検証ではありません。
 
 公式の[モデル格納先](https://github.com/unitreerobotics/unitree_rl_mjlab/tree/1425b15f73bd4095f0df53709d7c389c3eb9e790/deploy/robots/g1/config/policy/velocity/v0)と、同じ版の[実行手順](https://github.com/unitreerobotics/unitree_rl_mjlab/blob/1425b15f73bd4095f0df53709d7c389c3eb9e790/README.md)を参照してください。
 
