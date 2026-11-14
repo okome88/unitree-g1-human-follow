@@ -1,6 +1,20 @@
-# Unitree G1 人間追従・歩行・協調搬送シミュレーション
+# Unitree G1 協調搬送 — Isaac Lab開発版
 
-## 人間とG1の協調搬送（実装済み・実験用）
+**このブランチは`cooperative-carry/isaaclab`です。Isaac Lab用バックエンドを実装していますが、適合GPUでの起動・搬送成功は未検証です。**
+
+- [Isaac Labの構築・起動・検証手順](docs/ISAAC_LAB.md)
+- [人間追従用main](https://github.com/okome88/unitree-g1-human-follow/tree/main)
+- [動作確認済みのMuJoCo搬送版](https://github.com/okome88/unitree-g1-human-follow/tree/cooperative-carry/mujoco)
+
+```bash
+# Isaac Lab 2.3 / Isaac Sim 5.1の専用Python 3.11環境で実行
+python scripts/run_isaac_carry.py --check
+python scripts/run_isaac_carry.py --device cuda:0
+```
+
+通常CIの成功と、Isaac GPUでの実行成功は区別します。以下の既存検証結果はMuJoCo版のものです。
+
+## 同梱のMuJoCo搬送版について
 
 MuJoCo上で、人間役が有限の力で荷物を引き、G1が力に応じて移動する環境を追加しました。
 設定、人物の動き、上位制御、歩行方策、シーン構築を分離しています。

@@ -17,7 +17,7 @@ video = ["imageio[ffmpeg]>=2.36,<3"]
 g1-carry = "cooperative_carry.cli:main"
 
 [tool.setuptools]
-packages = ["cooperative_carry"]
+packages = ["cooperative_carry", "isaac_carry"]
 
 [tool.setuptools.package-data]
 cooperative_carry = ["asset_manifest.json"]

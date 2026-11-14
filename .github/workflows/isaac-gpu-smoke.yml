@@ -1,0 +1,25 @@
+name: Isaac Lab GPU smoke (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isaac:
+    # A separately provisioned runner is required. Never run public PR code automatically here.
+    runs-on: [self-hosted, linux, x64, isaaclab-2.3-gpu]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check pinned Isaac environment
+        run: python scripts/run_isaac_carry.py --check
+      - name: Fetch pinned robot assets
+        run: python -c "from cooperative_carry.assets import fetch_assets; fetch_assets('.cache/robots/unitree_g1')"
+      - name: Unloaded locomotion acceptance
+        run: python scripts/run_isaac_carry.py --config configs/walk_g1.toml --headless --device cuda:0 --duration 5 --require-stable --output results/isaac-walk
+      - name: Cooperative carrying acceptance
+        run: python scripts/run_isaac_carry.py --headless --device cuda:0 --require-goal --output results/isaac-carry
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: isaac-smoke-results
+          path: results/isaac-*/

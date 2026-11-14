@@ -22,7 +22,7 @@ GUI・動画にはOpenGL環境が必要です。サーバーでのGUIなし評�
 既存のmjlab学習環境は更新せず、このリポジトリの`.venv`に分離します。
 
 ```bash
-git clone https://github.com/okome88/unitree-g1-human-follow.git
+git clone --branch cooperative-carry/mujoco https://github.com/okome88/unitree-g1-human-follow.git
 cd unitree-g1-human-follow
 uv sync --frozen --extra dev --extra video
 uv run --frozen --extra video g1-carry fetch-assets

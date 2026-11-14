@@ -1,0 +1,4 @@
+# Install into Isaac Lab 2.3 / Isaac Sim 5.1's Python 3.11 environment.
+# Isaac supplies numpy and torch. Do not install the MuJoCo uv.lock into this environment.
+onnxruntime==1.22.1
+PyYAML==6.0.3
