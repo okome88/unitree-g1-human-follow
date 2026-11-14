@@ -1,0 +1,18 @@
+# Experimental: official locomotion policy has not been trained for carrying.
+robot = "g1"
+carry = true
+duration = 20.0
+goal_distance = 1.5
+
+[human]
+kind = "straight"
+speed = 0.15
+start_time = 2.0
+stop_time = 16.0
+
+[payload]
+mass = 0.5
+length = 1.0
+
+[controller]
+kind = "admittance"

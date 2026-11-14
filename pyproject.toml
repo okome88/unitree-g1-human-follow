@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "g1-cooperative-carry"
+version = "0.1.0"
+description = "Modular MuJoCo human-G1 cooperative carrying research environment"
+requires-python = ">=3.11,<3.14"
+dependencies = ["mujoco==3.3.7", "numpy==2.2.6", "onnxruntime==1.22.1", "PyYAML==6.0.3"]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2"]
+video = ["imageio[ffmpeg]>=2.36,<3"]
+
+[project.scripts]
+g1-carry = "cooperative_carry.cli:main"
+
+[tool.setuptools]
+packages = ["cooperative_carry"]
+
+[tool.setuptools.package-data]
+cooperative_carry = ["asset_manifest.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

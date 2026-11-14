@@ -1,0 +1,7 @@
+robot = "g1"
+carry = false
+duration = 20.0
+
+[controller]
+kind = "fixed"
+max_speed = 0.15

@@ -1,4 +1,25 @@
-# Unitree G1 人間追従・歩行シミュレーション
+# Unitree G1 人間追従・歩行・協調搬送シミュレーション
+
+## 人間とG1の協調搬送（実装済み・実験用）
+
+MuJoCo上で、人間役が有限の力で荷物を引き、G1が力に応じて移動する環境を追加しました。
+設定、人物の動き、上位制御、歩行方策、シーン構築を分離しています。
+
+**[構築・起動手順と制限事項](docs/COOPERATIVE_CARRY.md)** ·
+**[拡張用インターフェース](docs/CARRY_ARCHITECTURE.md)** ·
+**[検証結果](docs/CARRY_VALIDATION.md)**
+
+```bash
+uv sync --frozen --extra dev --extra video
+uv run --frozen --extra video g1-carry fetch-assets
+uv run --frozen --extra video g1-carry run --config configs/carry_g1.toml --viewer
+```
+
+上記はPython版で、ゲームパッド・C++ビルドは不要です。初回のみネット接続でG1形状を取得します。
+Windowsでの実行・描画を確認し、Ubuntu用CIを追加しています。
+簡略化した人間と理想的なばね把持による研究用の初版であり、実機の搬送性能を示すものではありません。
+
+---
 
 Unitree G1の歩行学習・評価コードと、人間追従シミュレーションの設計を管理します。
 
