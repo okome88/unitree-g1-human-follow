@@ -1,4 +1,6 @@
-# Unitree G1 人間追従・歩行・協調搬送シミュレーション
+# Unitree G1 協調搬送 — MuJoCo版
+
+このブランチは`cooperative-carry/mujoco`です。[人間追従](https://github.com/okome88/unitree-g1-human-follow/tree/main)と[Isaac Lab開発版](https://github.com/okome88/unitree-g1-human-follow/tree/cooperative-carry/isaaclab)は別ブランチで管理します。[ブランチ一覧](BRANCHES.md)。
 
 ## 人間とG1の協調搬送（実装済み・実験用）
 
