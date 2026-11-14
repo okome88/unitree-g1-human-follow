@@ -1,90 +1,89 @@
-# Unitree G1 人間追従・歩行シミュレーション
+# G1-dev-master-thesis
 
-**このmainは人間追従用です。** 協調搬送は[MuJoCo版](https://github.com/okome88/unitree-g1-human-follow/tree/cooperative-carry/mujoco)と[Isaac Lab開発版](https://github.com/okome88/unitree-g1-human-follow/tree/cooperative-carry/isaaclab)へ分離しました。[ブランチの使い分け](BRANCHES.md)を参照してください。
+Unitree G1を用いた、人間追従と人間との協調搬送の研究用シミュレーションです。**この `main` ブランチでは人間追従を扱います。**
 
-- [駅コンコースでの追従](STATION.md)：改札・柱・ベンチ、20～50人の相互回避、到着客の流入、公式ONNXによるG1歩行。
+## ブランチを選ぶ
 
-- [Follow-Benchの評価手順](FOLLOW_BENCH.md)：公式2D環境へ既存の追従方式を接続し、複数seedのログと指標を保存。
+| ブランチ | 用途 | 状態 |
+|---|---|---|
+| [main](https://github.com/okome88/G1-dev-master-thesis/tree/main) | 人間追従・駅構内シミュレーション | 実装済み |
+| [cooperative-carry/mujoco](https://github.com/okome88/G1-dev-master-thesis/tree/cooperative-carry/mujoco) | 人間との協調搬送 | MuJoCoで動作確認済み |
+| [cooperative-carry/isaaclab](https://github.com/okome88/G1-dev-master-thesis/tree/cooperative-carry/isaaclab) | 協調搬送のIsaac Lab対応 | 実装済み・GPU実行未検証 |
+| [feat/simulation-human-follow](https://github.com/okome88/G1-dev-master-thesis/tree/feat/simulation-human-follow) | 元の追従開発ブランチ | 既存コード・履歴を保持 |
 
-Unitree G1の歩行学習・評価コードと、人間追従シミュレーションの設計を管理します。
+依存環境が異なるため、用途ごとに別フォルダへcloneしてください。[ブランチ運用の詳細](BRANCHES.md)。
 
-- **[公式モデルの使い方（HOW_TO_USE）](HOW_TO_USE.md)**：Ubuntuでの準備、シミュレーター起動、ゲームパッド操作、停止方法。
-- [人間追従の実装計画](HUMAN_FOLLOW_PLAN.md)：目標速度4 km/h、旋回なし／あり、通行人の追加設定、学習・評価条件。
-- `g1_locomotion.py`：MJLab 1.6.0による既存の地形歩行学習と評価。
-- `g1_warp_compat.py`：WarpのGPUソルバー互換用起動スクリプト。
-- `transfer/2026-11-07_08-33-29/params/`：既存モデルの学習設定。
-- [models](models/README.md)：Unitree公式のG1歩行モデル（ONNX）、公式制御設定、ライセンス、配布元と照合用ハッシュ。
+## mainでできること
 
-**ゲームパッド不要の追従シミュレーションを追加しました。[AUTO_FOLLOW.md](AUTO_FOLLOW.md)から起動してください。** 仮想人物の位置を使う追従計画と、収録した公式ONNXによるMuJoCo歩行を接続しています。実機通信はありません。画像による人物検出・再識別は未実装です。公式設定の前進上限は1.0 m/s（3.6 km/h）で、4 km/hへの適合は未検証です。既存の地形学習コードは前進0.4 m/s固定の別実験です。
+- **自動追従**：仮想人物の位置・速度を使い、公式29関節ONNXでG1を歩行させる。ゲームパッド不要。
+- **シナリオ評価**：直進・旋回・停止・対象喪失・通行人の横断。
+- **駅構内シミュレーション**：改札・柱・ベンチと、最大50人の群衆。
+- **Follow-Bench評価**：公式2D環境へ追従方式を接続し、結果を記録。
 
-コード・計画書・設定と、`models/` 内で明示的に選んだモデルをGitで管理します。途中のチェックポイント、実行ログ、動画は管理対象から除外します。既存モデルの用途・制限は[モデルの説明](models/README.md)を参照してください。依存するMJLab等のライセンスは各配布元に従います。
+画像による人物検出・再識別、実機通信は未実装です。実行はシミュレーション内で完結します。
 
-## 地形歩行実験の実行手順
+## クイックスタート — 人間追従
 
-UbuntuまたはWSLのUbuntuで実行します。学習はNVIDIA GPUを使います。
-GPUサーバーでも同じコマンドを使えます。共用機ではGPUジョブ内で起動してください。
-
-## 1. 現在のモデルを測る
-
-`g1_locomotion.py` を `~/mjlab-g1` に置き、Ubuntuで以下を実行します。
+Ubuntu / WSL2 Ubuntuで、Python 3.11とGitがある環境を想定しています。GUIにはOpenGL・WSLg等が必要です。
 
 ```bash
-cd ~/mjlab-g1
-run_g1() { uv run --no-project --python 3.12 --with 'mjlab==1.6.0' python g1_locomotion.py "$@"; }
+git clone --branch main https://github.com/okome88/G1-dev-master-thesis.git g1-follow
+cd g1-follow
+python3.11 -m venv .venv-follow
+source .venv-follow/bin/activate
+python -m pip install -r requirements-sim.txt
 
-checkpoint=$(find logs/rsl_rl/g1_velocity -type f -name 'model_5095.pt' | sort -V | tail -n 1)
-run_g1 eval "$checkpoint" --terrain flat
+# 形状を読み込む公式ランタイムを、固定版で用意
+git clone https://github.com/unitreerobotics/unitree_rl_mjlab.git ../official-runtime
+git -C ../official-runtime checkout 1425b15f73bd4095f0df53709d7c389c3eb9e790
+
+python -m human_follow.sim --runtime ../official-runtime --scenario straight --seconds 30 --viewer
 ```
 
-`Measured target` が 0.400 m/s で `Actual forward speed` がほぼゼロなら、
-前進指令に対して機体が前進できていません。
-`Completed` は評価時間内に一度もリセットしなかった個体数です。
-速度と誤差は最初のリセット前のサンプルを集計します。
-`Mean landings per foot` は、0.05秒以上浮いてから接地した回数を足ごとに平均した値です。
-左右の交互性や滑りはビューアでも確認してください。
-互換性エラーが出た場合は、そのモデルを学習したMJLabの版で評価してください。
+このPython経路では、公式C++シミュレーターや `g1_ctrl` を別に起動する必要はありません。画面なしで実行するときは `--viewer` を外します。
 
-## 2. 易しい地形で学習
+### 駅構内で追従させる
+
+上記の準備後、同じフォルダ・仮想環境で実行します。
 
 ```bash
-run_g1 train --envs 128 --iterations 1000 --difficulty 0.15
+python -m pip install -r requirements-station.txt
+python -m human_follow.station --runtime ../official-runtime --pedestrians 20 --seconds 60 --viewer --camera follow --output results/station-01
 ```
 
-地形の難易度は最低レベルから始まり、公式カリキュラムが走行実績に応じて調整します。
-地形の上限 0.15 は易しい設定です。最初の1,000回は試行の目安です。
-速度指令は機体基準の前進0.4 m/sで、速度追従報酬の重みは公式設定の2から4に変更しています。
-既定の速度カリキュラムは初期段階から速度範囲を上書きするため、この実験では無効にしています。
-地形カリキュラムは有効です。
-旧モデルと地形学習モデルでは地形センサーの入力が異なるため、地形モデルの初回は新規学習です。
+出力先には新しいフォルダ名を指定してください。条件の詳細は[駅構内の実行手順](STATION.md)を参照してください。
 
-## 3. 地形ごとに評価
+## ドキュメント
 
-完了した実行フォルダの最終モデルを選びます。
+| 資料 | 内容 |
+|---|---|
+| [自動追従](AUTO_FOLLOW.md) | シナリオ、速度、距離、通行人、結果の見方 |
+| [駅構内](STATION.md) | 群衆・到着客・カメラ・記録 |
+| [Follow-Bench](FOLLOW_BENCH.md) | 2Dベンチマークとの接続・反復評価 |
+| [地形歩行の学習・評価](docs/LOCOMOTION.md) | 既存のmjlab学習実験 |
+| [公式C++モデルの起動](HOW_TO_USE.md) | ゲームパッドを使う別の実行経路 |
+| [モデルと出典](models/README.md) | 公式ONNX・設定・ハッシュ・ライセンス |
+| [追従の初期計画](HUMAN_FOLLOW_PLAN.md) | 計画時点の目標。現在の実装状況は上記手順を参照 |
+
+詳細資料には以前のフォルダ名や `feat/simulation-human-follow` の起動例が残っています。新規セットアップはこのREADMEの `main` の手順を基準にしてください。
+
+## 主な構成
+
+| パス | 役割 |
+|---|---|
+| `human_follow/` | 追従制御、シミュレーション、評価 |
+| `configs/` | 通行人などの設定 |
+| `tests/` | 自動テスト |
+| `docs/validation/` | 保存済みの検証結果 |
+| `models/` | 公式モデルと出典情報 |
+| `g1_locomotion.py` | mjlabによる地形歩行実験 |
+
+## 検証と制限
 
 ```bash
-checkpoint=$(find logs/rsl_rl/g1_terrain_walk -type f -name 'model_*.pt' | sort -V | tail -n 1)
-run_g1 eval "$checkpoint" --terrain rough-flat
-run_g1 eval "$checkpoint" --terrain random_rough --difficulty 0.15
-run_g1 eval "$checkpoint" --terrain hf_pyramid_slope --difficulty 0.15
-run_g1 eval "$checkpoint" --terrain pyramid_stairs --difficulty 0.15
+python -m unittest discover -s tests -v
 ```
 
-平地で前進できることを確かめてから、同じ評価条件で難易度を上げます。
-地形ごとの評価は速度追従とリセットの有無を測ります。階段の登り切りは映像で別途確認します。
+任意依存や外部環境がない場合は、一部テストがスキップされます。記録済み結果は `docs/validation/` を参照してください。
 
-```bash
-run_g1 train --resume "$checkpoint" --envs 128 --iterations 2000 --difficulty 0.35
-```
-
-その後も評価結果を見ながら、上限を 0.6、1.0 と段階的に上げられます。
-別のUbuntuターミナルを使う場合は、手順1の `run_g1` の定義を再実行してください。
-
-### Viserで地形モデルを再生
-
-```bash
-uvx --python 3.12 --from 'mjlab==1.6.0' play Mjlab-Velocity-Rough-Unitree-G1 \
-  --checkpoint-file "$checkpoint" --viewer viser
-```
-
-ブラウザで http://localhost:8080 を開き、速度欄で前進0.4 m/s、横移動と旋回を0にします。
-TensorBoardの学習ログは `logs/rsl_rl/g1_terrain_walk` に保存されます。
+公式モデルの前進指令上限は1.0 m/s（3.6 km/h）です。時速4 kmでの動作や、実機での追従性能を保証するものではありません。モデル・依存ライブラリの利用条件は各配布元のライセンスに従います。
