@@ -10,6 +10,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: cooperative-carry/isaaclab
       - name: Check pinned Isaac environment
         run: python scripts/run_isaac_carry.py --check
       - name: Fetch pinned robot assets
