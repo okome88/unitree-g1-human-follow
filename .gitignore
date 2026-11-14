@@ -2,14 +2,11 @@
 __pycache__/
 *.py[cod]
 .venv/
+.venv-follow/
 venv/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-.cache/
-*.egg-info/
-build/
-dist/
 
 # Credentials and machine-specific configuration
 .env

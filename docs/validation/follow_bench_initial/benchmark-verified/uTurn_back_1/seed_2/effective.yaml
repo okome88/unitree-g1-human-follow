@@ -1,0 +1,91 @@
+world:
+  height: 30
+  width: 30
+  step_time: 0.1
+  sample_time: 0.1
+  offset:
+  - 0
+  - 0
+  collision_mode: unobstructed_obstacles
+  control_mode: auto
+  mdownsample: 2
+  planner:
+    dialate: 10
+    skip_num: 5
+    smooth: false
+robot:
+- kinematics:
+    name: diff
+  shape:
+    name: circle
+    radius: 0.35
+  state:
+  - 3
+  - 10
+  - 0
+  goal:
+  - 40
+  - 40
+  - 0
+  vel_min:
+  - 0.0
+  - -0.7
+  vel_max:
+  - 0.8
+  - 0.7
+  acce:
+  - 0.8
+  - 1.2
+  goal_threshold: 0.03
+  state_dim: 3
+  plot:
+    show_trail: true
+    show_goal: false
+  sensors:
+  - type: lidar2d
+    range_min: 0
+    range_max: 5
+    angle_range: 6.2831852
+    number: 200
+    noise: false
+    alpha: 0.3
+    build_map: true
+    map_resolution: 0.1
+target:
+- kinematics:
+    name: omni
+  shape:
+    name: circle
+    radius: 0.3
+  vel_min:
+  - -0.4
+  - -0.4
+  vel_max:
+  - 0.4
+  - 0.4
+  state:
+  - 5
+  - 10
+  - 0
+  goal:
+  - - - 5
+      - 10
+      - 0
+    - - 25
+      - 10
+      - 0
+    - - 25
+      - 13
+      - 0
+    - - 5
+      - 13
+      - 0
+  behavior:
+    name: orca
+    vxmax: 0.4
+    vymax: 0.4
+    acceler: 1.5
+    safe_dist: 0.4
+  state_dim: 3
+  plot:
+    show_trajectory: true

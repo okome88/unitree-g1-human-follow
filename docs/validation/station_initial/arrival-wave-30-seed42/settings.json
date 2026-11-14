@@ -1,0 +1,18 @@
+{
+  "runtime": "~/g1-official-demo/official-runtime",
+  "output": "results/station-validation/arrival-wave-30-seed42",
+  "pedestrians": 30,
+  "crowd_pattern": "arrival-wave",
+  "seed": 42,
+  "crowd_speed": 0.8,
+  "speed": 0.4,
+  "distance": 1.5,
+  "seconds": 60.0,
+  "fov": 140.0,
+  "sensor_range": 8.0,
+  "target_stop_at": 20.0,
+  "target_stop_for": 3.0,
+  "viewer": false,
+  "camera": "overview",
+  "snapshot": null
+}

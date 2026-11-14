@@ -4,7 +4,13 @@
   "commit": "1425b15f73bd4095f0df53709d7c389c3eb9e790",
   "retrieved_on": "2026-11-10",
   "modified": false,
-  "simulation_tested": false,
+  "simulation_tested": true,
+  "simulation_validation": {
+    "date": "2026-11-10",
+    "scope": "WSL2 MuJoCo Python adapter, five 30-second scenarios at target speed 0.4 m/s, seed 42; no hardware",
+    "report": "../../../AUTO_FOLLOW.md",
+    "raw_metrics": "../../../docs/validation"
+  },
   "files": [
     {
       "file": "policy.onnx",

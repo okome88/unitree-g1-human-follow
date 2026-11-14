@@ -1,0 +1,17 @@
+{
+    "max_steps": 1500,
+    "max_search_steps": 125,
+    "obstacle_avoidance_success": true,
+    "target_visibility_ratio": 1.0,
+    "search_success": true,
+    "search_path_length": 0.0,
+    "avg_robot_target_dist_no_radius": 1.4725112275160797,
+    "path_length": 20.261161979561184,
+    "avg_velocity": 0.13507441319707447,
+    "avg_acceleration": 0.14592801217915286,
+    "avg_jerk": 2.408915241125196,
+    "time_in_target_personal_zone": 149.99999999999577,
+    "time_in_human_private_zone": 3.800000000000002,
+    "time_in_target_search": 0,
+    "total_time": 150.0
+}

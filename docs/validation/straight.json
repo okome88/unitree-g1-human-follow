@@ -1,0 +1,36 @@
+{
+  "scenario": "straight",
+  "seed": 42,
+  "target_speed": 0.4,
+  "requested_seconds": 30.0,
+  "simulated_seconds": 29.99999999999425,
+  "fallen": false,
+  "samples": 1500,
+  "displacement_m": 11.708136492661492,
+  "distance_mean_m": 1.5717473530267243,
+  "distance_final_m": 1.483869279196155,
+  "distance_min_m": 1.482918879720866,
+  "height_min_m": 0.7649844521192699,
+  "obstacle_clearance_min_m": null,
+  "command_abs_max": [
+    0.8,
+    0.16091215534171424,
+    0.1788905666231648
+  ],
+  "lost_command_abs_max": 0.0,
+  "stop_reasons": {
+    "following": 1400,
+    "settling": 100
+  },
+  "wall_seconds": 2.0473639990000265,
+  "perception": "simulation ground truth; visual proxy people; no camera detector",
+  "transport": "none; in-process MuJoCo only",
+  "acceptance": {
+    "completed": true,
+    "follow_distance": true,
+    "moved": true,
+    "target_clearance": true,
+    "loss_stops": true,
+    "obstacle_clearance": true
+  }
+}

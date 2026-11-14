@@ -1,25 +1,10 @@
-# Unitree G1 人間追従・歩行・協調搬送シミュレーション
+# Unitree G1 人間追従・歩行シミュレーション
 
-## 人間とG1の協調搬送（実装済み・実験用）
+**このmainは人間追従用です。** 協調搬送は[MuJoCo版](https://github.com/okome88/unitree-g1-human-follow/tree/cooperative-carry/mujoco)と[Isaac Lab開発版](https://github.com/okome88/unitree-g1-human-follow/tree/cooperative-carry/isaaclab)へ分離しました。[ブランチの使い分け](BRANCHES.md)を参照してください。
 
-MuJoCo上で、人間役が有限の力で荷物を引き、G1が力に応じて移動する環境を追加しました。
-設定、人物の動き、上位制御、歩行方策、シーン構築を分離しています。
+- [駅コンコースでの追従](STATION.md)：改札・柱・ベンチ、20～50人の相互回避、到着客の流入、公式ONNXによるG1歩行。
 
-**[構築・起動手順と制限事項](docs/COOPERATIVE_CARRY.md)** ·
-**[拡張用インターフェース](docs/CARRY_ARCHITECTURE.md)** ·
-**[検証結果](docs/CARRY_VALIDATION.md)**
-
-```bash
-uv sync --frozen --extra dev --extra video
-uv run --frozen --extra video g1-carry fetch-assets
-uv run --frozen --extra video g1-carry run --config configs/carry_g1.toml --viewer
-```
-
-上記はPython版で、ゲームパッド・C++ビルドは不要です。初回のみネット接続でG1形状を取得します。
-Windowsでの実行・描画を確認し、Ubuntu用CIを追加しています。
-簡略化した人間と理想的なばね把持による研究用の初版であり、実機の搬送性能を示すものではありません。
-
----
+- [Follow-Benchの評価手順](FOLLOW_BENCH.md)：公式2D環境へ既存の追従方式を接続し、複数seedのログと指標を保存。
 
 Unitree G1の歩行学習・評価コードと、人間追従シミュレーションの設計を管理します。
 
@@ -30,7 +15,7 @@ Unitree G1の歩行学習・評価コードと、人間追従シミュレーシ�
 - `transfer/2026-11-07_08-33-29/params/`：既存モデルの学習設定。
 - [models](models/README.md)：Unitree公式のG1歩行モデル（ONNX）、公式制御設定、ライセンス、配布元と照合用ハッシュ。
 
-**現在の状態：人間追従は設計段階です。歩行には収録した公式モデルを優先して利用します。公式設定の前進上限は1.0 m/s（3.6 km/h）で、4 km/hへの適合は未検証です。既存の地形学習コードは前進0.4 m/s固定の別実験で、公式ONNXの実行には専用の入力・制御設定への対応が必要です。**
+**ゲームパッド不要の追従シミュレーションを追加しました。[AUTO_FOLLOW.md](AUTO_FOLLOW.md)から起動してください。** 仮想人物の位置を使う追従計画と、収録した公式ONNXによるMuJoCo歩行を接続しています。実機通信はありません。画像による人物検出・再識別は未実装です。公式設定の前進上限は1.0 m/s（3.6 km/h）で、4 km/hへの適合は未検証です。既存の地形学習コードは前進0.4 m/s固定の別実験です。
 
 コード・計画書・設定と、`models/` 内で明示的に選んだモデルをGitで管理します。途中のチェックポイント、実行ログ、動画は管理対象から除外します。既存モデルの用途・制限は[モデルの説明](models/README.md)を参照してください。依存するMJLab等のライセンスは各配布元に従います。
 

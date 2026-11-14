@@ -1,0 +1,54 @@
+{
+  "scenario": "turn",
+  "seed": 42,
+  "target_speed": 0.4,
+  "following_method": "adaptive_sampling_mpc",
+  "desired_distance_m": 2.0,
+  "target_turn_rate_rad_s": 0.08,
+  "pedestrian_routes": [
+    [
+      4,
+      -2.0,
+      0.0,
+      0.25,
+      0.3
+    ],
+    [
+      6,
+      -2.0,
+      0.0,
+      0.25,
+      0.3
+    ],
+    [
+      8,
+      -2.0,
+      0.0,
+      0.25,
+      0.3
+    ]
+  ],
+  "requested_seconds": 30.0,
+  "simulated_seconds": 29.99999999999425,
+  "fallen": false,
+  "samples": 1500,
+  "displacement_m": 8.58905983454177,
+  "distance_mean_m": 2.026094494065091,
+  "distance_final_m": 1.8505925903052993,
+  "distance_min_m": 1.8068393130386056,
+  "height_min_m": 0.7645145850531577,
+  "obstacle_clearance_min_m": 0.29094349010465603,
+  "command_abs_max": [
+    0.8,
+    0.25,
+    0.40385127812215527
+  ],
+  "lost_command_abs_max": 0.0,
+  "stop_reasons": {
+    "following": 1400,
+    "settling": 100
+  },
+  "wall_seconds": 2.248945009000181,
+  "perception": "simulation ground truth; visual proxy people; no camera detector",
+  "transport": "none; in-process MuJoCo only"
+}
